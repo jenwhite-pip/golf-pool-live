@@ -80,7 +80,12 @@
   .rank{font-weight:800;width:34px;text-align:center;font-size:1rem}
   .medal{font-size:1.15rem}
   .to-par{font-weight:700}
-  .under{color:var(--red)} .over{color:var(--ink)} .even{color:var(--muted)}
+  /* intuitive for non-golfers: under par = ahead (green), over par = behind (red) */
+  .under{color:#138a3a;font-weight:800} .over{color:var(--red)} .even{color:var(--muted)}
+  .parkey{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:.82rem;color:var(--muted);margin:2px 0 14px}
+  .parkey b{color:var(--ink)}
+  .parkey .sw{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+  .parkey .dot{width:11px;height:11px;border-radius:50%;display:inline-block;flex:0 0 auto}
   .pill{display:inline-block;background:var(--green-pale);color:var(--green);border-radius:6px;padding:2px 8px;font-size:.78rem;font-weight:600;margin:2px 4px 2px 0}
   .pill .s{color:var(--muted);font-weight:700;margin-left:4px}
   .pill.cut{background:#fdeaea;color:var(--red)}
@@ -107,12 +112,19 @@
   body.spectator .tabs{display:none}
   body.spectator header input.tourney{pointer-events:none;border-color:transparent;background:transparent;padding-left:0}
   body.spectator .live-tag{display:inline-flex}
+  /* per-team golfers: shown as a column on wide screens, as a wrapped row under each team on phones */
+  #leaderboard .pillrow{display:none}
+  #leaderboard .pillrow .lbl{display:block;font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700;margin:1px 0 4px}
   @media(max-width:640px){
     header h1{font-size:1.25rem}
     header .tname{margin-left:0;width:100%}
     .config-row{gap:12px}
     th,td{padding:7px 6px;font-size:.86rem}
-    .pillcol{display:none}          /* hide the wide "counting golfers" column on phones */
+    .pillcol{display:none}                 /* hide the wide golfers column... */
+    #leaderboard .pillrow{display:table-row} /* ...and show the golfers wrapped under each team instead */
+    #leaderboard tbody td{border-bottom:none}
+    #leaderboard .pillrow td{border-bottom:2px solid var(--line);padding:0 6px 11px}
+    .parkey{font-size:.78rem}
     main{padding:14px 10px 50px}
     .card{padding:14px}
   }
@@ -141,7 +153,13 @@
     <div class="card">
       <h2>Pool Standings</h2>
       <span class="live-tag" id="liveTag"><span class="live-dot"></span><span id="liveText">connecting…</span></span>
-      <p class="sub" id="lbSub">R1–R4 show each team's combined score that round; Total is the sum across all four rounds (to par). Lowest total wins.</p>
+      <p class="sub" id="lbSub">R1–R4 are each team's score that round; Total is all four combined.</p>
+      <div class="parkey">
+        <span><b>🏆 Lowest total wins.</b> Color = vs. par:</span>
+        <span class="sw"><span class="dot" style="background:#138a3a"></span> <b>under par</b> — ahead</span>
+        <span class="sw"><span class="dot" style="background:#6b7d6b"></span> even</span>
+        <span class="sw"><span class="dot" style="background:#c62828"></span> <b>over par</b> — behind</span>
+      </div>
       <div id="leaderboard"></div>
       <div class="legend" id="lbLegend"></div>
     </div>
@@ -447,7 +465,9 @@ function renderLeaderboard(){
       '<td><b>'+escapeHtml(x.p.name)+'</b></td>'+
       roundCells+
       '<td class="num to-par '+parClass(t)+'" style="font-size:1.05rem">'+fmtPar(t)+'</td>'+
-      '<td class="pillcol">'+picks+'</td></tr>';
+      '<td class="pillcol">'+picks+'</td></tr>'+
+      // same golfers, shown as a wrapped row under each team on phones (where the column is hidden)
+      '<tr class="pillrow'+(winner?' winner-row':'')+'"><td colspan="8"><span class="lbl">'+escapeHtml(x.p.name)+'’s golfers</span>'+picks+'</td></tr>';
   });
   html+='</tbody></table>';
   el.innerHTML = html;
