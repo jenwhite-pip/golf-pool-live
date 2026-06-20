@@ -88,7 +88,8 @@
   .parkey .dot{width:11px;height:11px;border-radius:50%;display:inline-block;flex:0 0 auto}
   .pill{display:inline-block;background:var(--green-pale);color:var(--green);border-radius:6px;padding:2px 8px;font-size:.78rem;font-weight:600;margin:2px 4px 2px 0}
   .pill .s{color:var(--muted);font-weight:700;margin-left:4px}
-  .pill.cut{background:#fdeaea;color:var(--red)}
+  .pill.cut{background:#fdeaea;color:var(--red);text-decoration:line-through}
+  .pill.cut .s{text-decoration:none}   /* strike the name, keep the score legible */
   .golfer-row{display:flex;gap:8px;align-items:center;margin-bottom:8px}
   .golfer-row .idx{width:22px;color:var(--muted);font-weight:700;text-align:center;flex:0 0 auto}
   .small{font-size:.8rem;color:var(--muted)}
